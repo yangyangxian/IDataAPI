@@ -40,6 +40,13 @@ namespace IDataAPI
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseCors(builder =>
+            {
+                builder.AllowAnyHeader();
+                builder.AllowAnyMethod();
+                builder.AllowAnyOrigin();
+            });
+
             app.UseMvc();
         }
     }
