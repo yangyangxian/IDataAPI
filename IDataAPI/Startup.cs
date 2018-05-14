@@ -28,7 +28,7 @@ namespace IDataAPI
         {
             services.AddMvc();
 
-            string connection = @"Server=Young-PC;Database=IData;user=yy;password=yy";
+            string connection = Configuration.GetSection("ConnectionStrings:IData").Value;
             services.AddDbContext<IDataContext>(options => options.UseSqlServer(connection));
         }
 
