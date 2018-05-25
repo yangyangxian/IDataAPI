@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using IDataAPI.Services.Calculators;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IDataAPI.Controllers
@@ -13,7 +14,15 @@ namespace IDataAPI.Controllers
         [HttpGet]
         public IEnumerable<string> Get()
         {
-            return new string[] { "hahaha", "value2" };
+            return new string[] { "Hello", "World" };
+        }
+
+        [Route("EggPuzzle")]
+        [HttpGet]
+        public IEnumerable<string> EggPuzzle()
+        {
+            Puzzles puzzles = new Puzzles();
+            return new string[] { "result", puzzles.EggPuzzle().ToString() };
         }
 
         // GET api/values/5
