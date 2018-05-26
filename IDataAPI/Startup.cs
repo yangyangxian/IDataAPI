@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using IDataAPI.Controls.Counters;
+using IDataAPI.Interfaces.Calculators;
+using IDataAPI.Interfaces.Counters;
+using IDataAPI.Models;
+using IDataAPI.Services.Calculators;
+using IDataAPI.Services.Counters;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-
-using Microsoft.EntityFrameworkCore;
-using IDataAPI.Models;
 
 namespace IDataAPI
 {
@@ -30,6 +28,12 @@ namespace IDataAPI
 
             string connection = Configuration.GetSection("ConnectionStrings:IData").Value;
             services.AddDbContext<IDataContext>(options => options.UseSqlServer(connection));
+
+            services.AddTransient<IPuzzles, PuzzlesService>();
+            services.AddScoped<IScopedCounter, ScopedCounter>();
+            services.AddTransient<ITransientCounter, TransientCounter>();
+            services.AddSingleton<ISingletonCounter, SingletonCounter>();
+            services.AddTransient<TestDILifeTimeService, TestDILifeTimeService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

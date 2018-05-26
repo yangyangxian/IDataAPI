@@ -1,15 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using IDataAPI.Services.Calculators;
+﻿using IDataAPI.Interfaces.Calculators;
+using IDataAPI.Interfaces.Counters;
+using IDataAPI.Services.Counters;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 namespace IDataAPI.Controllers
 {
     [Route("api/[controller]")]
     public class ValuesController : Controller
     {
+        IPuzzles puzzles;
+        TestDILifeTimeService testDILifeTimeService;
+
+        private IScopedCounter scopedCounter;
+        private ITransientCounter transientCounter;
+        private ISingletonCounter singletonCounter;
+
+        public ValuesController(IPuzzles puzzles,
+            TestDILifeTimeService testDILifeTimeService,
+            IScopedCounter scopedCounter,
+            ITransientCounter transientCounter,
+            ISingletonCounter singletonCounter)
+        {
+            this.puzzles = puzzles;
+            this.testDILifeTimeService = testDILifeTimeService;
+            this.scopedCounter = scopedCounter;
+            this.transientCounter = transientCounter;
+            this.singletonCounter = singletonCounter;
+        }
+
         // GET api/values
         [HttpGet]
         public IEnumerable<string> Get()
@@ -21,8 +40,25 @@ namespace IDataAPI.Controllers
         [HttpGet]
         public IEnumerable<string> EggPuzzle()
         {
-            Puzzles puzzles = new Puzzles();
-            return new string[] { "result", puzzles.EggPuzzle().ToString() };
+            return new string[] { "result", this.puzzles.EggPuzzle().ToString() };
+        }
+
+        [Route("TestDILifeTime")]
+        [HttpGet]
+        public IEnumerable<string> TestDILifeTime()
+        {
+            this.testDILifeTimeService.AddCounts();
+
+            this.scopedCounter.Add();
+            this.transientCounter.Add();
+            this.singletonCounter.Add();
+
+            IList<string> results = this.testDILifeTimeService.ReturnCounts();
+            results.Add("ScopedCounter in controller:" + this.scopedCounter.GetCount());
+            results.Add("TransientCounter in controller:" + this.transientCounter.GetCount());
+            results.Add("SingleCounter in controller:" + this.singletonCounter.GetCount());
+
+            return results;
         }
 
         // GET api/values/5

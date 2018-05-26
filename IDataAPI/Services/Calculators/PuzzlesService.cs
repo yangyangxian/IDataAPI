@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using IDataAPI.Interfaces.Calculators;
 
 namespace IDataAPI.Services.Calculators
 {
-    public class Puzzles
+    public class PuzzlesService : IPuzzles
     {
         public int EggPuzzle()
         {
